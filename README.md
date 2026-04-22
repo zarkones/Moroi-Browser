@@ -126,6 +126,8 @@ curl -X POST http://localhost:8080/screenshot \
 Import and use directly in Go:
 
 ```go
+import "github.com/zarkones/Moroi-Browser/browser"
+
 b, err := browser.New(false)
 if err != nil {
     log.Fatal(err)
