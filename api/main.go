@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"browser"
+	"github.com/zarkones/Moroi-Browser/browser"
 )
 
 func main() {

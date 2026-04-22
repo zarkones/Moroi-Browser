@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"browser"
+	"github.com/zarkones/Moroi-Browser/browser"
 )
 
 func main() {
