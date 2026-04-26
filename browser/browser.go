@@ -171,6 +171,31 @@ func (b *Browser) GetText() (string, error) {
 	return text, err
 }
 
+// GetTextFromTags returns the trimmed textContent of every element matching the given HTML tag name
+// (e.g. "p", "h1", "div", "span", "li", "a", ...). Returns only non-empty strings after trimming.
+// The slice is in document order. Uses the same pattern and error-handling style as GetText/GetHTML.
+func (b *Browser) GetTextFromTags(tag string) (texts []string, err error) {
+	b.recheckCtx()
+
+	ctx, cancel := context.WithTimeout(b.ctx, ActionTimeout)
+	_ = cancel
+
+	// Safe JS that works even if the tag name contains special characters (though real tag names won't).
+	// Uses getElementsByTagName because it is case-insensitive and exactly matches what the caller expects.
+	js := fmt.Sprintf(`Array.from(document.getElementsByTagName("%s"))
+		.map(function(el) {
+			return (el.textContent || "").trim();
+		})
+		.filter(function(t) {
+			return t.length > 0;
+		})`, tag)
+
+	if err = chromedp.Run(ctx, chromedp.Evaluate(js, &texts)); err != nil {
+		return texts, err
+	}
+
+	return texts, err
+}
 func (b *Browser) NavigateBack() error {
 	b.recheckCtx()
 	ctx, cancel := context.WithTimeout(b.ctx, ActionTimeout)
